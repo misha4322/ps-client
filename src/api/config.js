@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -12,5 +12,7 @@ export const API_ENDPOINTS = {
   BUILDS: `${BASE_URL}/api/builds`,
   BASKET: `${BASE_URL}/api/basket`,
   FAVORITES: `${BASE_URL}/api/favorites`,
-  ORDERS: `${BASE_URL}/api/orders`
+  ORDERS: `${BASE_URL}/api/orders`,
+
+  BASE: BASE_URL
 };

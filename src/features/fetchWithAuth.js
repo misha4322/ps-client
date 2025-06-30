@@ -1,5 +1,6 @@
+import store from '../app/store';
 import { API_ENDPOINTS } from '../api/config';
-import { API_ENDPOINTS } from '../app/store'
+import { refreshToken } from '../features/userSlice';
 
 export async function fetchWithAuth(url, options = {}) {
   const token = localStorage.getItem('token');
@@ -10,8 +11,8 @@ export async function fetchWithAuth(url, options = {}) {
 
   if (res.status === 401) {
     try {
-      const refreshRes = await store.dispatch(refreshToken()).unwrap();
-      options.headers.Authorization = `Bearer ${refreshRes}`;
+      const newToken = await store.dispatch(refreshToken()).unwrap();
+      options.headers.Authorization = `Bearer ${newToken}`;
       res = await fetch(`${API_ENDPOINTS.BASE}${url}`, options);
     } catch {
       store.dispatch(logout());
