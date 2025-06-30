@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../features/userSlice";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import s from "./Auth.module.css";
+import { API_ENDPOINTS } from '../../api/config';
 
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -26,11 +27,11 @@ export default function Register() {
     setErrorMessage(""); 
     
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+const res = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(form),
+});
       
       if (!res.ok) {
         const errorData = await res.json();

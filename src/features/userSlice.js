@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setBasketItems } from "./basketSlice";
+import { API_ENDPOINTS } from '../api/config';
 
 const parseJwt = (token) => {
   try {
@@ -34,13 +35,13 @@ const getInitialState = () => {
     try {
       user = JSON.parse(userData);
       isInitialized = true;
-      
+
       // Загрузка избранного из localStorage
       const userFavorites = localStorage.getItem(`favorites_${user.id}`);
       if (userFavorites) {
         favorites = JSON.parse(userFavorites);
       }
-      
+
       // Загрузка заказов из localStorage
       const userOrders = localStorage.getItem(`orders_${user.id}`);
       if (userOrders) {
@@ -60,7 +61,7 @@ const getInitialState = () => {
     error: null,
     status: 'idle',
   };
-};
+}; refreshToken
 
 const initialState = getInitialState();
 
@@ -68,16 +69,15 @@ export const initializeUser = createAsyncThunk(
   'user/initialize',
   async (_, { dispatch, rejectWithValue }) => {
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       return { user: null, token: null, favorites: [], orders: [], isInitialized: true };
     }
 
     try {
-      const res = await fetch('/api/auth/check', {
+      const res = await fetch(API_ENDPOINTS.AUTH.CHECK, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) {
         // Оставляем токен для оффлайн-режима, если статус не 401
         if (res.status === 401) {
@@ -139,12 +139,12 @@ export const initializeUser = createAsyncThunk(
         console.warn("Failed to load basket", basketError);
       }
 
-      return { 
-        user, 
-        token, 
+      return {
+        user,
+        token,
         favorites,
-        orders, 
-        isInitialized: true 
+        orders,
+        isInitialized: true
       };
     } catch (error) {
       const userData = localStorage.getItem("userData");
@@ -152,15 +152,15 @@ export const initializeUser = createAsyncThunk(
         const user = JSON.parse(userData);
         const favorites = JSON.parse(localStorage.getItem(`favorites_${user.id}`) || '[]');
         const orders = JSON.parse(localStorage.getItem(`orders_${user.id}`) || '[]');
-        return { 
-          user, 
-          token, 
+        return {
+          user,
+          token,
           favorites,
-          orders, 
-          isInitialized: true 
+          orders,
+          isInitialized: true
         };
       }
-      
+
       return rejectWithValue(error.message);
     }
   }
@@ -179,12 +179,12 @@ export const addFavoriteAsync = createAsyncThunk(
         },
         body: JSON.stringify({ build_id: build.id }),
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to add favorite');
       }
-      
+
       return await res.json();
     } catch (error) {
       return rejectWithValue(error.message || 'Network error');
@@ -203,12 +203,12 @@ export const removeFavoriteAsync = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to remove favorite');
       }
-      
+
       return favoriteId;
     } catch (error) {
       return rejectWithValue(error.message || 'Network error');
@@ -220,7 +220,7 @@ export const changePassword = createAsyncThunk(
   'user/changePassword',
   async ({ currentPassword, newPassword }, { getState, rejectWithValue }) => {
     const { token } = getState().user;
-    
+
     try {
       const res = await fetch('/api/auth/change-password', {
         method: 'POST',
@@ -255,12 +255,12 @@ export const updateFavoriteAsync = createAsyncThunk(
         },
         body: JSON.stringify(updatedBuild),
       });
-      
+
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to update favorite');
       }
-      
+
       return await res.json();
     } catch (error) {
       return rejectWithValue(error.message || 'Network error');
@@ -273,11 +273,10 @@ export const refreshToken = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const { token } = getState().user;
     try {
-      const res = await fetch('/api/auth/refresh', {
-        method: 'POST',
+      const res = await fetch(API_ENDPOINTS.AUTH.REFRESH, {
+        method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) {
         throw new Error('Не удалось обновить токен');
       }
@@ -300,26 +299,26 @@ const userSlice = createSlice({
       state.user = user;
       state.token = token;
       state.isInitialized = true;
-      
+
       localStorage.setItem("token", token);
       localStorage.setItem("currentUserId", user.id);
       localStorage.setItem("userData", JSON.stringify(user));
     },
     logout(state) {
       const userId = state.user?.id;
-      
+
       if (userId) {
         localStorage.removeItem(`basket_${userId}`);
         localStorage.removeItem(`favorites_${userId}`);
         localStorage.removeItem(`orders_${userId}`); // Удаляем заказы
       }
-      
+
       state.user = null;
       state.token = null;
       state.favorites = [];
       state.orders = []; // Очищаем заказы
       state.isInitialized = true;
-      
+
       localStorage.removeItem("token");
       localStorage.removeItem("currentUserId");
       localStorage.removeItem("userData");
@@ -363,7 +362,7 @@ const userSlice = createSlice({
           state.favorites = action.payload.favorites || [];
           state.orders = action.payload.orders || []; // Устанавливаем заказы
           state.isInitialized = true;
-          
+
           if (state.user) {
             localStorage.setItem("currentUserId", action.payload.user.id);
             localStorage.setItem(`favorites_${action.payload.user.id}`, JSON.stringify(action.payload.favorites || []));
@@ -415,7 +414,7 @@ const userSlice = createSlice({
       })
       .addCase(updateFavoriteAsync.fulfilled, (state, action) => {
         const updatedBuild = action.payload;
-        state.favorites = state.favorites.map(fav => 
+        state.favorites = state.favorites.map(fav =>
           fav.id === updatedBuild.id ? updatedBuild : fav
         );
         if (state.user) {
@@ -437,6 +436,6 @@ export const {
   setFavorites,
   addFavorite,
   removeFavorite,
-  addOrder, 
+  addOrder,
 } = userSlice.actions;
 export default userSlice.reducer;

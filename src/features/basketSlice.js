@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchWithAuth } from '../features/fetchWithAuth';
+import { API_ENDPOINTS } from '../api/config';
 
 // Функция для получения ID пользователя с учетом оффлайн-режима
 const getUserId = () => {
@@ -18,7 +19,7 @@ const loadBasket = () => {
 const syncBasket = (items) => {
   const userId = getUserId();
   localStorage.setItem(`basket_${userId}`, JSON.stringify(items));
-  
+
   // Автоматическая синхронизация с сервером для авторизованных пользователей
   const token = localStorage.getItem('token');
   if (token) {
@@ -43,7 +44,7 @@ export const syncBasketWithServer = createAsyncThunk(
     const items = state.basket.items;
 
     try {
-      const res = await fetch('/api/basket/sync', {
+      const res = await fetch(API_ENDPOINTS.BASKET.SYNC, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -87,12 +88,12 @@ const basketSlice = createSlice({
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
-        state.items.push({ 
-          build_id, 
-          name, 
-          img, 
-          total_price, 
-          quantity: 1 
+        state.items.push({
+          build_id,
+          name,
+          img,
+          total_price,
+          quantity: 1
         });
       }
 
@@ -115,13 +116,13 @@ const basketSlice = createSlice({
     },
     removeFromBasket: (state, action) => {
       state.items = state.items.filter(item => item.build_id !== action.payload);
-      
+
       // Используем новую функцию синхронизации
       syncBasket(state.items);
     },
     clearBasket: (state) => {
       state.items = [];
-      
+
       syncBasket([]);
     },
     loadUserBasket: (state) => {
@@ -131,7 +132,7 @@ const basketSlice = createSlice({
     },
     setBasketItems: (state, action) => {
       state.items = action.payload;
-      
+
 
       syncBasket(action.payload);
     },
@@ -144,26 +145,26 @@ const basketSlice = createSlice({
       .addCase(syncBasketWithServer.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
-        
+
 
         syncBasket(action.payload);
       })
       .addCase(syncBasketWithServer.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        
+
 
         syncBasket(state.items);
       });
   },
 });
 
-export const { 
-  addToBasket, 
-  updateQuantity, 
-  removeFromBasket, 
+export const {
+  addToBasket,
+  updateQuantity,
+  removeFromBasket,
   clearBasket,
   loadUserBasket,
-  setBasketItems 
+  setBasketItems
 } = basketSlice.actions;
 export default basketSlice.reducer;

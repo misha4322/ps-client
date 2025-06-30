@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { 
-  updateQuantity, 
-  removeFromBasket, 
+import {
+  updateQuantity,
+  removeFromBasket,
   clearBasket,
-  syncBasketWithServer 
+  syncBasketWithServer
 } from "../../features/basketSlice";
 import { IMaskInput } from "react-imask";
 import s from "./ProductBasket.module.css";
+import { API_ENDPOINTS } from '../../api/config';
 
 const categoryLabels = {
   processor: "Процессор",
@@ -29,11 +30,11 @@ export const ProductBasket = () => {
   const token = useSelector(state => state.user.token);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [orderSuccess, setOrderSuccess] = useState(false);
-  const [orderInfo, setOrderInfo] = useState({ 
-    id: null, 
-    phone: "", 
-    total: 0, 
-    status: "" 
+  const [orderInfo, setOrderInfo] = useState({
+    id: null,
+    phone: "",
+    total: 0,
+    status: ""
   });
   const [error, setError] = useState(null);
   const [buildComponents, setBuildComponents] = useState({});
@@ -54,7 +55,7 @@ export const ProductBasket = () => {
     const loadComponents = async () => {
       const componentsMap = {};
       const loadingMap = {};
-      
+
       for (const item of basketItems) {
         if (!buildComponents[item.build_id]) {
           loadingMap[item.build_id] = true;
@@ -70,18 +71,18 @@ export const ProductBasket = () => {
           loadingMap[item.build_id] = false;
         }
       }
-      
+
       setBuildComponents(prev => ({ ...prev, ...componentsMap }));
       setLoadingComponents(prev => ({ ...prev, ...loadingMap }));
     };
-    
+
     if (basketItems.length > 0) {
       loadComponents();
     }
   }, [basketItems]);
 
   const totalPrice = basketItems.reduce(
-    (sum, item) => sum + item.total_price * item.quantity, 
+    (sum, item) => sum + item.total_price * item.quantity,
     0
   );
 
@@ -101,7 +102,7 @@ export const ProductBasket = () => {
         })),
       };
 
-      const res = await fetch('/api/orders', {
+      const res = await fetch(API_ENDPOINTS.ORDERS, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,7 +110,6 @@ export const ProductBasket = () => {
         },
         body: JSON.stringify(requestBody),
       });
-
       if (res.ok) {
         const order = await res.json();
         setOrderInfo({
@@ -118,7 +118,7 @@ export const ProductBasket = () => {
           total: totalPrice,
           status: 'pending'
         });
-        
+
         setOrderSuccess(true);
         dispatch(clearBasket());
       } else {
@@ -141,7 +141,7 @@ export const ProductBasket = () => {
           <h2 className={s.basketTitle}>
             Корзина {user && `(${user.email})`}
           </h2>
-          
+
           {basketItems.length === 0 ? (
             <p className={s.emptyBasket}>Корзина пуста</p>
           ) : (
@@ -152,19 +152,19 @@ export const ProductBasket = () => {
                     <h4 className={s.itemName}>{item.name}</h4>
                     <div className={s.itemContent}>
                       <div className={s.imageWrapper}>
-                        <img 
-                          src={`/build_images/${item.img}`} 
-                          alt={item.name} 
-                          className={s.buildImage} 
+                        <img
+                          src={`/build_images/${item.img}`}
+                          alt={item.name}
+                          className={s.buildImage}
                         />
                       </div>
-                      
+
                       <div className={s.itemDetails}>
                         <p className={s.priceInfo}>Цена: {item.total_price} ₽ × {item.quantity}</p>
-                        
+
                         <div className={s.componentsContainer}>
                           <h5>Комплектующие:</h5>
-                          
+
                           {loadingComponents[item.build_id] ? (
                             <p className={s.loading}>Загрузка компонентов...</p>
                           ) : buildComponents[item.build_id]?.length > 0 ? (
@@ -187,10 +187,10 @@ export const ProductBasket = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className={s.itemActions}>
                     <div className={s.quantityControls}>
-                      <button 
+                      <button
                         onClick={() => handleQuantityChange(item.build_id, -1)}
                         className={`${s.quantityButton} ${s.animateButton}`}
                         disabled={item.quantity <= 1}
@@ -198,14 +198,14 @@ export const ProductBasket = () => {
                         -
                       </button>
                       <span className={s.quantity}>{item.quantity}</span>
-                      <button 
+                      <button
                         onClick={() => handleQuantityChange(item.build_id, 1)}
                         className={`${s.quantityButton} ${s.animateButton}`}
                       >
                         +
                       </button>
                     </div>
-                    <button 
+                    <button
                       onClick={() => dispatch(removeFromBasket(item.build_id))}
                       className={`${s.removeButton} ${s.animateButton}`}
                     >
@@ -219,7 +219,7 @@ export const ProductBasket = () => {
 
           <div className={s.summary}>
             <h3 className={s.total}>Итого: {totalPrice} ₽</h3>
-            
+
             <div className={s.orderSection}>
               <IMaskInput
                 className={s.phoneInput}
@@ -228,7 +228,7 @@ export const ProductBasket = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
-              
+
               <div className={s.actionButtons}>
                 <button
                   onClick={handleOrder}
@@ -254,17 +254,17 @@ export const ProductBasket = () => {
           <p>Телефон: {orderInfo.phone}</p>
           <p>Сумма: {orderInfo.total} ₽</p>
           <p>Статус: {orderInfo.status === 'pending' ? 'Ожидает подтверждения' : 'В обработке'}</p>
-          
+
           <div className={s.successButtons}>
-            <button 
-              onClick={() => navigate("/profile#orders")} 
+            <button
+              onClick={() => navigate("/profile#orders")}
               className={`${s.continueButton} ${s.animateButton}`}
             >
               Перейти к заказам
             </button>
-            
-            <button 
-              onClick={() => navigate("/")} 
+
+            <button
+              onClick={() => navigate("/")}
               className={`${s.continueButton} ${s.animateButton}`}
             >
               Вернуться на главную

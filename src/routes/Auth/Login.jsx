@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../features/userSlice";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import s from "./Auth.module.css";
+import { API_ENDPOINTS } from '../../api/config';
+
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -20,25 +22,25 @@ export default function Login() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError(null); 
+    setError(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      
+
       if (res.ok) {
         const data = await res.json();
         dispatch(setUser(data));
         navigate("/profile", { replace: true });
       } else {
         const errorData = await res.json();
-        
+
         if (res.status === 401) {
           if (errorData.message === "Invalid password") {
             setError("Неверный пароль");

@@ -7,6 +7,7 @@ import { addToBasket, syncBasketWithServer } from "../../features/basketSlice";
 import { setSelectedComponents } from "../../features/componentsSlice";
 import { Trash2, Clock, CheckCircle, Archive } from "react-feather";
 import s from "./Profile.module.css";
+import { API_ENDPOINTS } from '../../api/config';
 
 const categoryLabels = {
   processor: "Процессор",
@@ -67,10 +68,8 @@ export default function Profile() {
   const loadOrders = async () => {
     setIsLoadingOrders(true);
     try {
-      const res = await fetch('/api/orders', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(API_ENDPOINTS.ORDERS, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!res.ok) {
@@ -196,7 +195,7 @@ export default function Profile() {
 
   const markOrderCollected = async (orderId) => {
     try {
-      const res = await fetch(`/api/orders/${orderId}/complete`, {
+      const res = await fetch(`${API_ENDPOINTS.ORDERS}/${orderId}/complete`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -7,12 +7,13 @@ import { addToBasket, syncBasketWithServer } from "../../features/basketSlice";
 import { addFavoriteAsync, removeFavoriteAsync } from "../../features/userSlice";
 import s from "./Home.module.css";
 import { Heart as HeartIcon } from "react-feather";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+
+import { API_ENDPOINTS } from '../../api/config';
 
 const categoryLabels = {
   processor: "Процессор",
@@ -39,7 +40,7 @@ export const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const buildsRes = await fetch('/api/builds?predefined=true');
+        const buildsRes = await fetch(API_ENDPOINTS.BUILDS + '?predefined=true');
         if (!buildsRes.ok) throw new Error(buildsRes.statusText);
         
         const buildsData = await buildsRes.json();
