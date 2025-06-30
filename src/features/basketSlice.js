@@ -19,7 +19,7 @@ const syncBasket = (items) => {
   const userId = getUserId();
   localStorage.setItem(`basket_${userId}`, JSON.stringify(items));
   
-  // Автоматическая синхронизация с сервером для авторизованных пользователей
+
   const token = localStorage.getItem('token');
   if (token) {
     fetch('/api/basket/sync', {
@@ -122,7 +122,6 @@ const basketSlice = createSlice({
     clearBasket: (state) => {
       state.items = [];
       
-      // Используем новую функцию синхронизации
       syncBasket([]);
     },
     loadUserBasket: (state) => {
@@ -133,7 +132,7 @@ const basketSlice = createSlice({
     setBasketItems: (state, action) => {
       state.items = action.payload;
       
-      // Используем новую функцию синхронизации
+
       syncBasket(action.payload);
     },
   },
@@ -146,14 +145,14 @@ const basketSlice = createSlice({
         state.status = 'succeeded';
         state.items = action.payload;
         
-        // Используем новую функцию синхронизации
+
         syncBasket(action.payload);
       })
       .addCase(syncBasketWithServer.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
         
-        // Сохраняем текущее состояние корзины при ошибке
+
         syncBasket(state.items);
       });
   },

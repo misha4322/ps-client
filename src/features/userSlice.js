@@ -143,11 +143,10 @@ export const initializeUser = createAsyncThunk(
         user, 
         token, 
         favorites,
-        orders, // Возвращаем заказы
+        orders, 
         isInitialized: true 
       };
     } catch (error) {
-      // Оффлайн режим - используем сохраненные данные
       const userData = localStorage.getItem("userData");
       if (userData) {
         const user = JSON.parse(userData);
@@ -157,7 +156,7 @@ export const initializeUser = createAsyncThunk(
           user, 
           token, 
           favorites,
-          orders, // Возвращаем заказы в оффлайн-режиме
+          orders, 
           isInitialized: true 
         };
       }

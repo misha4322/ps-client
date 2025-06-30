@@ -20,7 +20,7 @@ export default function Login() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError(null); // Сбрасываем ошибку при изменении поля
+    setError(null); 
   };
 
   const handleSubmit = async (e) => {

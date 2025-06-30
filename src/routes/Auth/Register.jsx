@@ -6,7 +6,7 @@ import s from "./Auth.module.css";
 
 export default function Register() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const [errorMessage, setErrorMessage] = useState(""); // Добавляем состояние для ошибки
+  const [errorMessage, setErrorMessage] = useState(""); 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,7 +23,7 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Сбрасываем сообщение об ошибке
+    setErrorMessage(""); 
     
     try {
       const res = await fetch("/api/auth/register", {
@@ -32,15 +32,12 @@ export default function Register() {
         body: JSON.stringify(form),
       });
       
-      // Исправление: сначала проверяем статус ответа
       if (!res.ok) {
-        // Получаем текст ошибки из ответа
         const errorData = await res.json();
         setErrorMessage(errorData.message || "Ошибка регистрации");
         return;
       }
       
-      // Если ответ успешный, обрабатываем данные
       const data = await res.json();
       dispatch(setUser(data));
       navigate("/profile", { replace: true });
@@ -55,7 +52,6 @@ export default function Register() {
       <form onSubmit={handleSubmit} className={s.authForm}>
         <h2>Регистрация</h2>
         
-        {/* Отображение сообщения об ошибке */}
         {errorMessage && <div className={s.error}>{errorMessage}</div>}
         
         <input

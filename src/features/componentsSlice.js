@@ -8,7 +8,7 @@ export const fetchComponents = createAsyncThunk(
 
     while (attempt < maxRetries) {
       try {
-        const res = await fetch('http://localhost:3001/api/components');
+        const res = await fetch('http://ps-server-production.up.railway.app/api/components');
         if (!res.ok) throw new Error('Не удалось загрузить компоненты');
         const data = await res.json();
         localStorage.setItem("cachedComponents", JSON.stringify(data));
