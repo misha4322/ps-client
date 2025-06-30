@@ -1,0 +1,29 @@
+.authContainer {
+  max-width: 360px;
+  margin: 80px auto;
+  text-align: center;
+}
+.authForm {
+  display: flex;
+  flex-direction: column;
+}
+.authForm input {
+  margin: 8px 0;
+  padding: 10px;
+  font-size: 16px;
+}
+.authForm button {
+  margin-top: 16px;
+  padding: 10px;
+  background: #c0ff01;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.authContainer p {
+  margin-top: 12px;
+}
+.authContainer a {
+  color: #61dafb;
+  text-decoration: underline;
+}

@@ -1,0 +1,334 @@
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 48px;
+}
+
+.favoritesButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 2px solid #c0ff01;
+  border-radius: 30px;
+  color: #c0ff01;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 10;
+}
+
+.favoritesButton:hover {
+  background-color: #c0ff01;
+  color: #000;
+}
+
+.heartIcon {
+  stroke-width: 2px;
+}
+
+.sliderContainer {
+  margin: 50px 0;
+}
+
+.slide {
+  background-color: black;
+  border-radius: 40px;
+  padding: 20px;
+  height: 500px;
+}
+
+.containerSlide {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+ 
+}
+
+.textSlide {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  color: white;
+  align-items: center
+}
+
+.textSlide span {
+  font-size: 32px;
+  font-weight: 400;
+  color: #C0FF01;
+}
+
+.slogab {
+  margin: 20px 0 40px;
+  font-size: 48px;
+  font-weight: 400;
+}
+
+.imgSlide {
+  width: 40%;
+  max-height: 400px;
+  height: 400px;
+  object-fit: contain;
+}
+
+.btnSlide {
+  width: 300px;
+  height: 70px;
+  border: 2px solid #C0FF01;
+  border-radius: 40px;
+  color: #C0FF01;
+  font-size: 24px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btnSlide:hover {
+  background-color: #C0FF01;
+  color: black;
+}
+
+.priceCategoryh2 {
+  text-align: center;
+  margin: 60px 0 40px;
+  font-size: 48px;
+}
+
+.priceRange {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.priceCategoryItem {
+  background-color: black;
+  border-radius: 20px;
+  padding: 30px;
+  width: 30%;
+  min-width: 350px;
+  flex-grow: 1;
+}
+
+.div_opozone {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.valuable_h4 {
+  font-size: 32px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.buildImage {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.compList {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  flex-grow: 1;
+}
+
+.componentItem {
+  margin-bottom: 15px;
+  color: white;
+}
+
+.span {
+  font-size: 18px;
+}
+
+.line {
+  height: 1px;
+  background-color: white;
+  margin-top: 8px;
+}
+
+.div_knopka {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btnBuy {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.buyButton_categories,
+.editButton,
+.favoriteButton {
+  min-width: 140px;
+  height: 45px;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.buyButton_categories {
+  border: 2px solid #C0FF01;
+  color: #C0FF01;
+  background-color: transparent;
+}
+
+.buyButton_categories:hover {
+  background-color: #C0FF01;
+  color: black;
+}
+
+.editButton {
+  border: 2px solid #797979;
+  color: #797979;
+  background-color: transparent;
+}
+
+.editButton:hover {
+  border-color: #C0FF01;
+  color: #C0FF01;
+}
+
+.favoriteButton {
+  border: 2px solid #ff4081;
+  color: #ff4081;
+  background-color: transparent;
+}
+
+.favoriteButton:hover {
+  background-color: #ff4081;
+  color: white;
+}
+
+.totalPrice {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+.status,
+.statusError {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 50px;
+}
+
+.statusError {
+  color: red;
+}
+/* Активное состояние кнопки избранного */
+.activeFavorite {
+  background-color: #C0FF01;
+  color: white;
+  border-color: #C0FF01;
+}
+
+.activeFavorite:hover {
+  background-color: #3d8b40;
+}
+@media (max-width: 1024px) {
+  .containerSlide {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .textSlide {
+    width: 100%;
+    align-items: center;
+  }
+  
+  .imgSlide {
+    width: 70%;
+    margin-top: 30px;
+  }
+  
+  .priceCategoryItem {
+    width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .title,
+  .priceCategoryh2 {
+    font-size: 36px;
+  }
+  
+  .slogab {
+    font-size: 32px;
+  }
+  
+  .priceCategoryItem {
+    width: 100%;
+  }
+  
+  .btnSlide {
+    width: 250px;
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .btnBuy {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .buyButton_categories,
+  .editButton,
+  .favoriteButton {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .div_knopka {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .btnBuy {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .favoritesButton {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 0 auto 20px;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+@media(max-width:370px){
+  .container{
+    padding: 0;
+  }
+}

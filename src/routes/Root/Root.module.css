@@ -1,0 +1,335 @@
+/* Основные стили контейнера */
+.container {
+  background-color: black;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 101; /* Увеличено с 100 до 101 */
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+/* Стили логотипа */
+.logoContainer {
+  flex: 1;
+}
+
+.logo {
+  height: 40px;
+  transition: transform 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Основная навигация (видна на десктопе) */
+.navMain {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s;
+}
+
+.navLink:hover {
+  color: #c0ff01;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #c0ff01;
+  transition: width 0.3s;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* Правая часть хедера (иконки + авторизация) */
+.nav {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Стили иконок */
+.navIcons {
+  display: flex;
+  gap: 15px;
+}
+
+.iconLink {
+  display: block;
+  position: relative;
+}
+
+.iconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+  transition: transform 0.3s;
+}
+
+.icon:hover {
+  transform: scale(1.1);
+}
+
+.basketCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #c0ff01;
+  color: #000;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Блок авторизации */
+.authContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.userEmailLink {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.userEmailLink:hover {
+  color: #c0ff01;
+  transform: scale(1.05);
+}
+
+.userEmail {
+  color: white;
+  font-size: 16px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.authLink {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.authLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Кнопка меню для мобилок */
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* Лоадер */
+.fullscreenLoader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loader {
+  color: white;
+  font-size: 24px;
+}
+
+/* Мобильное меню */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-wrap: wrap;
+  }
+
+  .menuToggle {
+    display: block;
+    order: 2;
+    z-index: 101;
+  }
+
+  .navMain {
+    display: none;
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 70%;
+    max-width: 300px;
+    background: black;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 80px 30px 30px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 102; /* Увеличено с 100 до 102 */
+  }
+
+  .navOpen {
+    transform: translateX(0);
+  }
+
+  /* Стили для мобильной навигации */
+  .mobileNav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 20px;
+  }
+
+  .mobileNavLink {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 12px 0;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .mobileNavLink:hover {
+    color: #c0ff01;
+  }
+
+  .mobileNavLink::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #c0ff01;
+    transition: width 0.3s;
+  }
+
+  .mobileNavLink:hover::after {
+    width: 100%;
+  }
+
+  .navIcons {
+    margin-top: 30px;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .authContainer {
+    flex-direction: column;
+    margin-top: 30px;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .userEmail {
+    max-width: 100%;
+    text-align: center;
+  }
+}
+
+/* Десктоп: показываем основную навигацию */
+@media (min-width: 769px) {
+  .navMain {
+    display: flex;
+  }
+  
+  /* Скрываем мобильные ссылки на десктопе */
+  .mobileNav {
+    display: none;
+  }
+}
+
+/* Планшеты: корректировка отступов */
+@media (max-width: 1024px) {
+  .headerContent {
+    padding: 0 15px;
+  }
+  
+  .navMain {
+    gap: 20px;
+  }
+}
+
+/* Мелкие девайсы */
+@media (max-width: 480px) {
+  .logo {
+    height: 35px;
+  }
+  
+  .nav {
+    width: 85%;
+    padding: 70px 20px 20px;
+  }
+  
+  .mobileNavLink {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+}
