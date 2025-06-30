@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from '../api/config';
+import { API_ENDPOINTS } from '../app/store'
 
 export async function fetchWithAuth(url, options = {}) {
   const token = localStorage.getItem('token');
