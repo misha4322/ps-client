@@ -19,7 +19,7 @@ const syncBasket = (items) => {
   const userId = getUserId();
   localStorage.setItem(`basket_${userId}`, JSON.stringify(items));
   
-
+  // Автоматическая синхронизация с сервером для авторизованных пользователей
   const token = localStorage.getItem('token');
   if (token) {
     fetch('/api/basket/sync', {
