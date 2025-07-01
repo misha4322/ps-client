@@ -27,17 +27,17 @@ export default function Register() {
     setErrorMessage(""); 
     
     try {
-const res = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(form),
-});
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        setErrorMessage(errorData.message || "Ошибка регистрации");
-        return;
-      }
+    const res = await fetch(API_ENDPOINTS.AUTH.REGISTER, { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      setErrorMessage(errorData.message || "Ошибка регистрации");
+      return;
+    }
       
       const data = await res.json();
       dispatch(setUser(data));
