@@ -1,7 +1,6 @@
-// src/routes/Home/Home.js
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setSelectedComponents } from "../../features/componentsSlice";
 import { addToBasket, syncBasketWithServer } from "../../features/basketSlice";
 import { addFavoriteAsync, removeFavoriteAsync } from "../../features/userSlice";
@@ -57,23 +56,29 @@ export const Home = () => {
     };
     fetchData();
   }, []);
-const handleBuy = async (build) => {
-  if (!token) {
-    navigate("/login");
-    return;
-  }
 
- 
-  const roundedPrice = Math.round(build.total_price);
-  
-  dispatch(addToBasket({
-    build_id: build.id,
-    name: build.name,
-    img: build.image_url,
-    total_price: roundedPrice, 
-    quantity: 1
-  }));
-};
+  const handleBuy = async (build) => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      dispatch(addToBasket({
+        build_id: build.id,
+        name: build.name,
+        img: build.image_url,
+        total_price: Math.round(build.total_price),
+        quantity: 1
+      }));
+
+      await dispatch(syncBasketWithServer()).unwrap();
+      navigate("/basket");
+    } catch (err) {
+      console.error("Ошибка при добавлении в корзину:", err);
+      alert("Ошибка: " + err.message);
+    }
+  };
 
   const handleEdit = (build) => {
     const config = {};
@@ -94,23 +99,7 @@ const handleBuy = async (build) => {
         await dispatch(removeFavoriteAsync(build.id)).unwrap();
         alert(`Сборка "${build.name}" удалена из избранного!`);
       } else {
-        const res = await fetch(API_ENDPOINTS.FAVORITES, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            build_id: build.id
-          })
-        });
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Ошибка добавления в избранное");
-        }
-
-        const data = await res.json();
-        dispatch(addFavoriteAsync(data));
+        await dispatch(addFavoriteAsync(build)).unwrap();
         alert(`Сборка "${build.name}" добавлена в избранное!`);
       }
     } catch (err) {
@@ -164,7 +153,7 @@ const handleBuy = async (build) => {
                   </button>
                 </div>
                 <img 
-                  src={`/build_images/${b.image_url}`} 
+                  src={`${API_ENDPOINTS.BASE_URL}/build_images/${b.image_url}`} 
                   alt={b.name} 
                   className={s.imgSlide} 
                 />
@@ -184,7 +173,7 @@ const handleBuy = async (build) => {
               <div className={s.div_opozone}>
                 <p className={s.valuable_h4}>{build.name}</p>
                 <img 
-                  src={`/build_images/${build.image_url}`} 
+                  src={`${API_ENDPOINTS.BASE_URL}/build_images/${build.image_url}`} 
                   alt={build.name} 
                   className={s.buildImage} 
                 />
@@ -210,7 +199,7 @@ const handleBuy = async (build) => {
                       {isFavorite ? 'В избранном' : 'В избранное'}
                     </button>
                   </div>
-                  <div className={s.totalPrice}>{build.total_price}₽</div>
+                  <div className={s.totalPrice}>{Math.round(build.total_price)}₽</div>
                 </div>
               </div>
             </div>

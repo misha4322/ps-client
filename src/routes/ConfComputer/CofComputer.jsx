@@ -133,10 +133,11 @@ export const ConfComputer = () => {
           body: JSON.stringify({
             name: buildName,
             total_price: Math.round(totalPrice),
-            components: Object.values(selectedComponents).map(c => c.id),
+            components: componentIds,
             is_predefined: false
           }),
         });
+
         if (!buildRes.ok) {
           const errorData = await buildRes.json();
           throw new Error(errorData.message || 'Ошибка создания сборки');
@@ -207,6 +208,7 @@ export const ConfComputer = () => {
 
     const totalPrice = calculateTotalPrice();
     const buildName = `Сборка от ${new Date().toLocaleDateString()}`;
+    const componentIds = Object.values(selectedComponents).map(c => c.id);
 
     try {
       const res = await fetch(API_ENDPOINTS.BUILDS, {
@@ -218,10 +220,11 @@ export const ConfComputer = () => {
         body: JSON.stringify({
           name: buildName,
           total_price: Math.round(totalPrice),
-          components: Object.values(selectedComponents).map(c => c.id),
+          components: componentIds,
           is_predefined: false
         }),
       });
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Ошибка создания сборки');
@@ -242,7 +245,6 @@ export const ConfComputer = () => {
       }
 
       navigate("/basket");
-      alert("Сборка добавлена в корзину!");
     } catch (err) {
       console.error("Ошибка при добавлении в корзину:", err);
       alert("Ошибка: " + err.message);

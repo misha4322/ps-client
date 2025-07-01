@@ -1,30 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchWithAuth } from '../features/fetchWithAuth';
 import { API_ENDPOINTS } from '../api/config';
 
-// Функция для получения ID пользователя с учетом оффлайн-режима
 const getUserId = () => {
   const userId = localStorage.getItem("currentUserId");
   return userId || "guest";
 };
 
-// Загрузка корзины из localStorage
 const loadBasket = () => {
   const userId = getUserId();
   const saved = localStorage.getItem(`basket_${userId}`);
   return saved ? JSON.parse(saved) : [];
 };
 
-// Функция синхронизации корзины
 const syncBasket = (items) => {
   const userId = getUserId();
   localStorage.setItem(`basket_${userId}`, JSON.stringify(items));
-
-  // Автоматическая синхронизация с сервером для авторизованных пользователей
+  
   const token = localStorage.getItem('token');
   if (token) {
-
-    fetch(`${API_ENDPOINTS.BASKET}/sync`, {
+    fetch(API_ENDPOINTS.BASKET_SYNC, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -45,7 +39,7 @@ export const syncBasketWithServer = createAsyncThunk(
     const items = state.basket.items;
 
     try {
-      const res = await fetch(API_ENDPOINTS.BASKET.SYNC, {
+      const res = await fetch(API_ENDPOINTS.BASKET_SYNC, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -56,7 +50,7 @@ export const syncBasketWithServer = createAsyncThunk(
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error('Ошибка синхронизации корзины: ' + (errorData.message || res.status));
+        throw new Error('Ошибка синхронизации: ' + (errorData.message || res.status));
       }
 
       const data = await res.json();
@@ -97,8 +91,6 @@ const basketSlice = createSlice({
           quantity: 1
         });
       }
-
-      // Используем новую функцию синхронизации
       syncBasket(state.items);
     },
     updateQuantity: (state, action) => {
@@ -111,19 +103,14 @@ const basketSlice = createSlice({
           state.items = state.items.filter(i => i.build_id !== build_id);
         }
       }
-
-      // Используем новую функцию синхронизации
       syncBasket(state.items);
     },
     removeFromBasket: (state, action) => {
       state.items = state.items.filter(item => item.build_id !== action.payload);
-
-      // Используем новую функцию синхронизации
       syncBasket(state.items);
     },
     clearBasket: (state) => {
       state.items = [];
-
       syncBasket([]);
     },
     loadUserBasket: (state) => {
@@ -133,8 +120,6 @@ const basketSlice = createSlice({
     },
     setBasketItems: (state, action) => {
       state.items = action.payload;
-
-
       syncBasket(action.payload);
     },
   },
@@ -146,15 +131,11 @@ const basketSlice = createSlice({
       .addCase(syncBasketWithServer.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = action.payload;
-
-
         syncBasket(action.payload);
       })
       .addCase(syncBasketWithServer.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-
-
         syncBasket(state.items);
       });
   },
