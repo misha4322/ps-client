@@ -171,7 +171,7 @@ export const addFavoriteAsync = createAsyncThunk(
   async (build, { getState, rejectWithValue }) => {
     const token = getState().user.token;
     try {
-      const res = await fetch('/api/favorites', {
+      const res = await fetch(API_ENDPOINTS.FAVORITES.ADD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,6 @@ export const addFavoriteAsync = createAsyncThunk(
         },
         body: JSON.stringify({ build_id: build.id }),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to add favorite');
@@ -197,13 +196,12 @@ export const removeFavoriteAsync = createAsyncThunk(
   async (favoriteId, { getState, rejectWithValue }) => {
     const token = getState().user.token;
     try {
-      const res = await fetch(`/api/favorites/${favoriteId}`, {
+      const res = await fetch(API_ENDPOINTS.FAVORITES.REMOVE(favoriteId), {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to remove favorite');
@@ -220,9 +218,8 @@ export const changePassword = createAsyncThunk(
   'user/changePassword',
   async ({ currentPassword, newPassword }, { getState, rejectWithValue }) => {
     const { token } = getState().user;
-
     try {
-      const res = await fetch('/api/auth/change-password', {
+      const res = await fetch(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -245,9 +242,10 @@ export const changePassword = createAsyncThunk(
 
 export const updateFavoriteAsync = createAsyncThunk(
   'user/updateFavorite',
-  async ({ buildId, updatedBuild }, { rejectWithValue }) => {
+  async ({ buildId, updatedBuild }, { getState, rejectWithValue }) => {
+    const token = getState().user.token; // Добавлено получение токена
     try {
-      const res = await fetch(`/api/builds/${buildId}`, {
+      const res = await fetch(API_ENDPOINTS.BUILDS.UPDATE(buildId), { // Предполагается наличие UPDATE в API_ENDPOINTS
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -255,7 +253,6 @@ export const updateFavoriteAsync = createAsyncThunk(
         },
         body: JSON.stringify(updatedBuild),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to update favorite');
@@ -273,7 +270,7 @@ export const refreshToken = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const { token } = getState().user;
     try {
-      const res = await fetch(API_ENDPOINTS.AUTH.REFRESH, {
+      const res = await fetch(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
