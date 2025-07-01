@@ -28,7 +28,7 @@ const getInitialState = () => {
   const userData = localStorage.getItem('userData');
   let user = null;
   let favorites = [];
-  let orders = [];
+  let orders = []; // Добавляем заказы
   let isInitialized = false;
 
   if (token && userData) {
@@ -56,12 +56,12 @@ const getInitialState = () => {
     user,
     token,
     favorites,
-    orders,
+    orders, // Добавляем заказы в начальное состояние
     isInitialized,
     error: null,
     status: 'idle',
   };
-};
+}; refreshToken
 
 const initialState = getInitialState();
 
@@ -78,8 +78,8 @@ export const initializeUser = createAsyncThunk(
       const res = await fetch(API_ENDPOINTS.AUTH.CHECK, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
       if (!res.ok) {
+        // Оставляем токен для оффлайн-режима, если статус не 401
         if (res.status === 401) {
           localStorage.removeItem("token");
           localStorage.removeItem("userData");
@@ -94,10 +94,9 @@ export const initializeUser = createAsyncThunk(
       // Загрузка избранного
       let favorites = [];
       try {
-        const favoritesRes = await fetch(API_ENDPOINTS.FAVORITES, {
+        const favoritesRes = await fetch('/api/favorites', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
         if (favoritesRes.ok) {
           favorites = await favoritesRes.json();
           localStorage.setItem(`favorites_${user.id}`, JSON.stringify(favorites));
@@ -109,10 +108,9 @@ export const initializeUser = createAsyncThunk(
       // Загрузка заказов
       let orders = [];
       try {
-        const ordersRes = await fetch(API_ENDPOINTS.ORDERS, {
+        const ordersRes = await fetch('/api/orders', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
         if (ordersRes.ok) {
           orders = await ordersRes.json();
           localStorage.setItem(`orders_${user.id}`, JSON.stringify(orders));
@@ -123,10 +121,9 @@ export const initializeUser = createAsyncThunk(
 
       // Загрузка корзины
       try {
-        const basketRes = await fetch(API_ENDPOINTS.BASKET, {
+        const basketRes = await fetch('/api/basket', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
         if (basketRes.ok) {
           const basket = await basketRes.json();
           dispatch(setBasketItems(basket.map(item => ({
@@ -174,7 +171,7 @@ export const addFavoriteAsync = createAsyncThunk(
   async (build, { getState, rejectWithValue }) => {
     const token = getState().user.token;
     try {
-      const res = await fetch(API_ENDPOINTS.FAVORITES, {
+      const res = await fetch('/api/favorites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +197,7 @@ export const removeFavoriteAsync = createAsyncThunk(
   async (favoriteId, { getState, rejectWithValue }) => {
     const token = getState().user.token;
     try {
-      const res = await fetch(`${API_ENDPOINTS.FAVORITES}/${favoriteId}`, {
+      const res = await fetch(`/api/favorites/${favoriteId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -225,7 +222,7 @@ export const changePassword = createAsyncThunk(
     const { token } = getState().user;
 
     try {
-      const res = await fetch(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, {
+      const res = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -248,10 +245,9 @@ export const changePassword = createAsyncThunk(
 
 export const updateFavoriteAsync = createAsyncThunk(
   'user/updateFavorite',
-  async ({ buildId, updatedBuild }, { getState, rejectWithValue }) => {
-    const token = getState().user.token;
+  async ({ buildId, updatedBuild }, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_ENDPOINTS.BUILDS}/${buildId}`, {
+      const res = await fetch(`/api/builds/${buildId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -285,6 +281,7 @@ export const refreshToken = createAsyncThunk(
         throw new Error('Не удалось обновить токен');
       }
       const data = await res.json();
+      // Сохраняем новый токен
       localStorage.setItem('token', data.token);
       return data.token;
     } catch (error) {
@@ -313,13 +310,13 @@ const userSlice = createSlice({
       if (userId) {
         localStorage.removeItem(`basket_${userId}`);
         localStorage.removeItem(`favorites_${userId}`);
-        localStorage.removeItem(`orders_${userId}`);
+        localStorage.removeItem(`orders_${userId}`); // Удаляем заказы
       }
 
       state.user = null;
       state.token = null;
       state.favorites = [];
-      state.orders = [];
+      state.orders = []; // Очищаем заказы
       state.isInitialized = true;
 
       localStorage.removeItem("token");
@@ -344,6 +341,7 @@ const userSlice = createSlice({
         localStorage.setItem(`favorites_${state.user.id}`, JSON.stringify(state.favorites));
       }
     },
+    // Добавляем редьюсер для заказов
     addOrder(state, action) {
       state.orders.push(action.payload);
       if (state.user) {
@@ -362,7 +360,7 @@ const userSlice = createSlice({
           state.user = action.payload.user;
           state.token = action.payload.token;
           state.favorites = action.payload.favorites || [];
-          state.orders = action.payload.orders || [];
+          state.orders = action.payload.orders || []; // Устанавливаем заказы
           state.isInitialized = true;
 
           if (state.user) {
@@ -374,7 +372,7 @@ const userSlice = createSlice({
           state.user = null;
           state.token = null;
           state.favorites = [];
-          state.orders = [];
+          state.orders = []; // Очищаем заказы
           state.isInitialized = true;
         }
       })
@@ -384,7 +382,7 @@ const userSlice = createSlice({
         state.user = null;
         state.token = null;
         state.favorites = [];
-        state.orders = [];
+        state.orders = []; // Очищаем заказы
       })
       .addCase(addFavoriteAsync.fulfilled, (state, action) => {
         state.favorites.push(action.payload);

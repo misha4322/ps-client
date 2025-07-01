@@ -133,11 +133,10 @@ export const ConfComputer = () => {
           body: JSON.stringify({
             name: buildName,
             total_price: Math.round(totalPrice),
-            components: componentIds,
+            components: Object.values(selectedComponents).map(c => c.id),
             is_predefined: false
           }),
         });
-
         if (!buildRes.ok) {
           const errorData = await buildRes.json();
           throw new Error(errorData.message || 'Ошибка создания сборки');
@@ -223,7 +222,6 @@ export const ConfComputer = () => {
           is_predefined: false
         }),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Ошибка создания сборки');

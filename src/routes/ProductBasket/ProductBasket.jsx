@@ -218,12 +218,20 @@ export const ProductBasket = () => {
             <h3 className={s.total}>Итого: {totalPrice} ₽</h3>
 
             <div className={s.orderSection}>
-              <IMaskInput
+              <input
                 className={s.phoneInput}
-                mask={"+7 (000) 000-00-00"}
-                placeholder="+7 (___) ___-__-__"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Форматирование номера
+                  const cleaned = value.replace(/\D/g, '');
+                  let formatted = cleaned;
+                  if (cleaned.length > 1) {
+                    formatted = `+7 (${cleaned.substring(1, 4)}) ${cleaned.substring(4, 7)}-${cleaned.substring(7, 9)}-${cleaned.substring(9, 11)}`;
+                  }
+                  setPhoneNumber(formatted);
+                }}
+                placeholder="+7 (___) ___-__-__"
               />
 
               <div className={s.actionButtons}>
