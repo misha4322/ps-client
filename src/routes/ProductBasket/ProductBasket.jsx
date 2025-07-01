@@ -55,12 +55,11 @@ export const ProductBasket = () => {
     const loadComponents = async () => {
       const componentsMap = {};
       const loadingMap = {};
-
       for (const item of basketItems) {
         if (!buildComponents[item.build_id]) {
           loadingMap[item.build_id] = true;
           try {
-            const res = await fetch(`/api/builds/${item.build_id}/components`);
+            const res = await fetch(`${API_ENDPOINTS.BUILDS}/${item.build_id}/components`);
             if (!res.ok) throw new Error('Ошибка загрузки компонентов');
             const data = await res.json();
             componentsMap[item.build_id] = data;
@@ -71,15 +70,13 @@ export const ProductBasket = () => {
           loadingMap[item.build_id] = false;
         }
       }
-
       setBuildComponents(prev => ({ ...prev, ...componentsMap }));
       setLoadingComponents(prev => ({ ...prev, ...loadingMap }));
     };
-
     if (basketItems.length > 0) {
       loadComponents();
     }
-  }, [basketItems]);
+  }, [basketItems, buildComponents]);
 
   const totalPrice = basketItems.reduce(
     (sum, item) => sum + item.total_price * item.quantity,

@@ -44,7 +44,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (activeTab === "favorites" && token) {
-      fetch('/api/favorites', {
+      fetch(API_ENDPOINTS.FAVORITES, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {

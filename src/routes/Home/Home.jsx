@@ -94,7 +94,7 @@ const handleBuy = async (build) => {
         await dispatch(removeFavoriteAsync(build.id)).unwrap();
         alert(`Сборка "${build.name}" удалена из избранного!`);
       } else {
-        const res = await fetch('/api/favorites', {
+        const res = await fetch(API_ENDPOINTS.FAVORITES, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,7 +104,6 @@ const handleBuy = async (build) => {
             build_id: build.id
           })
         });
-
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || "Ошибка добавления в избранное");
