@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+export const BASE_URL = 'https://ps-server-production.up.railway.app';
 
 export const API_ENDPOINTS = {
   AUTH: {
