@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ps-server-production.up.railway.app';
+export const BASE_URL = 'https://ps-server-production.up.railway.app';
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -13,5 +13,6 @@ export const API_ENDPOINTS = {
   BASKET: `${BASE_URL}/api/basket`,
   FAVORITES: `${BASE_URL}/api/favorites`,
   ORDERS: `${BASE_URL}/api/orders`,
+
   BASE: BASE_URL
 };
