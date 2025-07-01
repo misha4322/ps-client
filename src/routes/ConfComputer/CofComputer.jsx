@@ -14,6 +14,7 @@ import hard from "../../assets/harddisk 1.svg";
 import cooler from "../../assets/cooler 1.svg";
 import s from "./ConfCompute.module.css";
 import { Heart } from "react-feather";
+import { API_ENDPOINTS } from '../../api/config';
 
 const sectionIcons = {
   processor: proc,
@@ -69,8 +70,8 @@ export const ConfComputer = () => {
 
   useEffect(() => {
     fetch(API_ENDPOINTS.COMPONENTS)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch components');
+      .then((res) => {
+        if (!res.ok) throw new Error('Не удалось загрузить компоненты');
         return res.json();
       })
       .then((grouped) => {
@@ -84,7 +85,8 @@ export const ConfComputer = () => {
         setProductsByCategory(roundedGroups);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Components fetch error:", err);
         setError("Не удалось загрузить комплектующие");
         setLoading(false);
       });

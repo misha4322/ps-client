@@ -23,7 +23,8 @@ const syncBasket = (items) => {
   // Автоматическая синхронизация с сервером для авторизованных пользователей
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('/api/basket/sync', {
+
+    fetch(`${API_ENDPOINTS.BASKET}/sync`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
