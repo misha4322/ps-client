@@ -22,11 +22,11 @@ export default function Register() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage(""); 
-    
-    try {
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage("");
+  
+  try {
     const res = await fetch(API_ENDPOINTS.AUTH.REGISTER, { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,16 +38,15 @@ export default function Register() {
       setErrorMessage(errorData.message || "Ошибка регистрации");
       return;
     }
-      
-      const data = await res.json();
-      dispatch(setUser(data));
-      navigate("/profile", { replace: true });
-    } catch (err) {
-      console.error("Full registration error:", err);
-      setErrorMessage("Ошибка сети: " + err.message);
-    }
-  };
-
+    
+    const data = await res.json();
+    dispatch(setUser(data));
+    navigate("/profile", { replace: true });
+  } catch (err) {
+    console.error("Full registration error:", err);
+    setErrorMessage("Сервер недоступен. Попробуйте позже.");
+  }
+};
   return (
     <div className={s.authContainer}>
       <form onSubmit={handleSubmit} className={s.authForm}>

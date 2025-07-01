@@ -41,20 +41,22 @@ export const Home = () => {
     const fetchData = async () => {
       try {
         const buildsRes = await fetch(API_ENDPOINTS.BUILDS + '?predefined=true');
-        if (!buildsRes.ok) throw new Error(buildsRes.statusText);
+        
+        if (!buildsRes.ok) {
+          throw new Error(`HTTP error! status: ${buildsRes.status}`);
+        }
         
         const buildsData = await buildsRes.json();
         setBuilds(buildsData);
         setLoading(false);
       } catch (err) {
-        console.error(err);
-        setError("Не удалось загрузить данные");
+        console.error("Fetch builds error:", err);
+        setError("Не удалось загрузить данные: " + err.message);
         setLoading(false);
       }
     };
     fetchData();
   }, []);
-
 const handleBuy = async (build) => {
   if (!token) {
     navigate("/login");
