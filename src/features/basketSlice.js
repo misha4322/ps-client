@@ -15,22 +15,19 @@ const loadBasket = () => {
 const syncBasket = (items) => {
   const userId = getUserId();
   localStorage.setItem(`basket_${userId}`, JSON.stringify(items));
-
+  
   const token = localStorage.getItem('token');
   if (token) {
-  
-    setTimeout(() => {
-      fetch(`${API_ENDPOINTS.BASKET_SYNC}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ items }),
-      }).catch(error => {
-        console.error('Ошибка синхронизации корзины:', error);
-      });
-    }, 500);
+    fetch(API_ENDPOINTS.BASKET_SYNC, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ items }),
+    }).catch(error => {
+      console.error('Ошибка синхронизации корзины:', error);
+    });
   }
 };
 
@@ -140,16 +137,7 @@ const basketSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
         syncBasket(state.items);
-      })
-      .addCase(syncBasketWithServer.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.items = action.payload;
-        
-        // Сохраняем в localStorage
-        const userId = getUserId();
-        localStorage.setItem(`basket_${userId}`, JSON.stringify(action.payload));
-      })
-      
+      });
   },
 });
 

@@ -103,18 +103,17 @@ export const ConfComputer = () => {
     const favKey = fav.components ? fav.components.map(c => c.id).sort().join(',') : '';
     return favKey === selectedKey;
   }) : null;
-
   const handleToggleFavorite = async () => {
     if (!token) {
       navigate("/login", { state: { from: location.pathname } });
       return;
     }
-
+  
     if (!isComplete()) {
       alert("Выберите все комплектующие!");
       return;
     }
-
+  
     try {
       if (favoriteItem) {
         await dispatch(removeFavoriteAsync(favoriteItem.id)).unwrap();
@@ -123,7 +122,7 @@ export const ConfComputer = () => {
         const totalPrice = calculateTotalPrice();
         const buildName = `Моя сборка от ${new Date().toLocaleDateString()}`;
         const componentIds = Object.values(selectedComponents).map(c => c.id);
-
+  
         const buildRes = await fetch(API_ENDPOINTS.BUILDS, {
           method: 'POST',
           headers: {
@@ -137,12 +136,12 @@ export const ConfComputer = () => {
             is_predefined: false
           }),
         });
-
+  
         if (!buildRes.ok) {
           const errorData = await buildRes.json();
           throw new Error(errorData.message || 'Ошибка создания сборки');
         }
-
+  
         const build = await buildRes.json();
         await dispatch(addFavoriteAsync(build)).unwrap();
         alert("Сборка добавлена в избранное!");
@@ -151,8 +150,7 @@ export const ConfComputer = () => {
       console.error("Ошибка при работе с избранным:", err);
       alert("Ошибка: " + err.message);
     }
-  };
-
+  };  
   const scrollToCategory = (category) => {
     setActiveCategory(category);
     categoryRefs.current[category]?.scrollIntoView({
@@ -199,18 +197,12 @@ export const ConfComputer = () => {
       }, 300);
     }
   };
-
   const handleAddToBasket = async () => {
-    if (!token) {
-      navigate("/login", { state: { from: location.pathname } });
-      return;
-    }
-  
     if (!isComplete()) {
       alert("Пожалуйста, выберите все комплектующие!");
       return;
     }
-
+  
     const totalPrice = calculateTotalPrice();
     const buildName = `Сборка от ${new Date().toLocaleDateString()}`;
   
@@ -235,6 +227,7 @@ export const ConfComputer = () => {
       }
   
       const build = await res.json();
+  
       dispatch(addToBasket({
         build_id: build.id,
         name: build.name,
@@ -242,16 +235,18 @@ export const ConfComputer = () => {
         total_price: Math.round(build.total_price),
         quantity: 1
       }));
-
-      await dispatch(syncBasketWithServer()).unwrap();
-      
+  
+      if (token) {
+        await dispatch(syncBasketWithServer()).unwrap();
+      }
+  
       navigate("/basket");
+      alert("Сборка добавлена в корзину!");
     } catch (err) {
       console.error("Ошибка при добавлении в корзину:", err);
       alert("Ошибка: " + err.message);
     }
   };
-
   const calculateTotalPrice = () =>
     Object.values(selectedComponents).reduce(
       (sum, it) => sum + (it?.price || 0),
