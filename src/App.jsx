@@ -1,6 +1,5 @@
-// src/App.jsx
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import { Provider, useDispatch } from "react-redux";
 import store from "./app/store";
 import { initializeUser } from "./features/userSlice";
@@ -14,7 +13,7 @@ import Login from "./routes/Auth/Login";
 import Register from "./routes/Auth/Register";
 import Profile from "./routes/Profile/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Navigate,  createHashRouter, RouterProvider} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const router = createHashRouter([
   {

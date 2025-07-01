@@ -13,5 +13,8 @@ export const API_ENDPOINTS = {
   BASKET: `${BASE_URL}/api/basket`,
   FAVORITES: `${BASE_URL}/api/favorites`,
   ORDERS: `${BASE_URL}/api/orders`,
-  BASE: BASE_URL
+  FAVORITE: (id) => `${BASE_URL}/api/favorites/${id}`,
+  BASKET_SYNC: `${BASE_URL}/api/basket/sync`,
+  BUILD_COMPONENTS: (id) => `${BASE_URL}/api/builds/${id}/components`,
+  USER_ORDERS: `${BASE_URL}/api/orders/user`,
 };
