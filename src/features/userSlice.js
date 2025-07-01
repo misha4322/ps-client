@@ -171,7 +171,7 @@ export const addFavoriteAsync = createAsyncThunk(
   async (build, { getState, rejectWithValue }) => {
     const token = getState().user.token;
     try {
-      const res = await fetch(API_ENDPOINTS.FAVORITES, {
+      const res = await fetch('/api/favorites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export const addFavoriteAsync = createAsyncThunk(
         return rejectWithValue(errorData.message || 'Failed to add favorite');
       }
 
-      return build; 
+      return await res.json();
     } catch (error) {
       return rejectWithValue(error.message || 'Network error');
     }

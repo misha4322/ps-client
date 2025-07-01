@@ -7,6 +7,7 @@ import {
   clearBasket,
   syncBasketWithServer
 } from "../../features/basketSlice";
+import { IMaskInput } from "react-imask";
 import s from "./ProductBasket.module.css";
 import { API_ENDPOINTS } from '../../api/config';
 
@@ -58,7 +59,7 @@ export const ProductBasket = () => {
         if (!buildComponents[item.build_id]) {
           loadingMap[item.build_id] = true;
           try {
-            const res = await fetch(`${API_ENDPOINTS.BUILD_COMPONENTS(item.build_id)}`);
+            const res = await fetch(`${API_ENDPOINTS.BUILDS}/${item.build_id}/components`);
             if (!res.ok) throw new Error('Ошибка загрузки компонентов');
             const data = await res.json();
             componentsMap[item.build_id] = data;
@@ -83,15 +84,14 @@ export const ProductBasket = () => {
   );
 
   const handleOrder = async () => {
-    const cleanedPhone = phoneNumber.replace(/\D/g, '');
-    if (cleanedPhone.length !== 11) {
+    if (phoneNumber.replace(/\D/g, "").length !== 11) {
       alert("Введите корректный номер телефона (11 цифр)");
       return;
     }
 
     try {
       const requestBody = {
-        phone: cleanedPhone,
+        phone: phoneNumber,
         items: basketItems.map(item => ({
           build_id: item.build_id,
           quantity: item.quantity,
@@ -111,7 +111,7 @@ export const ProductBasket = () => {
         const order = await res.json();
         setOrderInfo({
           id: order.id,
-          phone: cleanedPhone,
+          phone: phoneNumber,
           total: totalPrice,
           status: 'pending'
         });
@@ -150,7 +150,7 @@ export const ProductBasket = () => {
                     <div className={s.itemContent}>
                       <div className={s.imageWrapper}>
                         <img
-                          src={`${API_ENDPOINTS.BASE_URL}/build_images/${item.img}`}
+                          src={`/build_images/${item.img}`}
                           alt={item.name}
                           className={s.buildImage}
                         />
@@ -223,6 +223,7 @@ export const ProductBasket = () => {
                 value={phoneNumber}
                 onChange={(e) => {
                   const value = e.target.value;
+                  // Форматирование номера
                   const cleaned = value.replace(/\D/g, '');
                   let formatted = cleaned;
                   if (cleaned.length > 1) {

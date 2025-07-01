@@ -124,19 +124,19 @@ export const ConfComputer = () => {
         const buildName = `Моя сборка от ${new Date().toLocaleDateString()}`;
         const componentIds = Object.values(selectedComponents).map(c => c.id);
 
-const buildRes = await fetch(API_ENDPOINTS.BUILDS, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({
-    name: buildName,
-    total_price: Math.round(totalPrice),
-    components: Object.values(selectedComponents).map(c => c.id),
-    is_predefined: false
-  }),
-});
+        const buildRes = await fetch(API_ENDPOINTS.BUILDS, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: buildName,
+            total_price: Math.round(totalPrice),
+            components: Object.values(selectedComponents).map(c => c.id),
+            is_predefined: false
+          }),
+        });
         if (!buildRes.ok) {
           const errorData = await buildRes.json();
           throw new Error(errorData.message || 'Ошибка создания сборки');
@@ -222,7 +222,6 @@ const buildRes = await fetch(API_ENDPOINTS.BUILDS, {
           is_predefined: false
         }),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Ошибка создания сборки');
