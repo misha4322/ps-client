@@ -13,6 +13,5 @@ export const API_ENDPOINTS = {
   BASKET: `${BASE_URL}/api/basket`,
   FAVORITES: `${BASE_URL}/api/favorites`,
   ORDERS: `${BASE_URL}/api/orders`,
-
   BASE: BASE_URL
 };

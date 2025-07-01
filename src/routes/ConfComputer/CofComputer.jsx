@@ -124,7 +124,7 @@ export const ConfComputer = () => {
         const buildName = `Моя сборка от ${new Date().toLocaleDateString()}`;
         const componentIds = Object.values(selectedComponents).map(c => c.id);
 
-        const buildRes = await fetch('/api/builds', {
+        const buildRes = await fetch(API_ENDPOINTS.BUILDS, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
