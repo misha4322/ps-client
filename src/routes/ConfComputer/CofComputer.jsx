@@ -210,7 +210,7 @@ export const ConfComputer = () => {
     const buildName = `Сборка от ${new Date().toLocaleDateString()}`;
 
     try {
-      const res = await fetch('/api/builds', {
+      const res = await fetch(API_ENDPOINTS.BUILDS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
