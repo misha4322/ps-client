@@ -68,9 +68,9 @@ export const ConfComputer = () => {
   const categoryRefs = useRef({});
 
   useEffect(() => {
-    fetch("/api/components")
-      .then((res) => {
-        if (!res.ok) throw new Error();
+    fetch(API_ENDPOINTS.COMPONENTS)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch components');
         return res.json();
       })
       .then((grouped) => {
@@ -228,7 +228,7 @@ export const ConfComputer = () => {
       }
 
       const build = await res.json();
-      
+
       dispatch(addToBasket({
         build_id: build.id,
         name: build.name,
