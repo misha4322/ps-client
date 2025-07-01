@@ -201,6 +201,11 @@ export const ConfComputer = () => {
   };
 
   const handleAddToBasket = async () => {
+    if (!token) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+  
     if (!isComplete()) {
       alert("Пожалуйста, выберите все комплектующие!");
       return;
@@ -208,8 +213,7 @@ export const ConfComputer = () => {
 
     const totalPrice = calculateTotalPrice();
     const buildName = `Сборка от ${new Date().toLocaleDateString()}`;
-    const componentIds = Object.values(selectedComponents).map(c => c.id);
-
+  
     try {
       const res = await fetch(API_ENDPOINTS.BUILDS, {
         method: 'POST',
@@ -220,18 +224,17 @@ export const ConfComputer = () => {
         body: JSON.stringify({
           name: buildName,
           total_price: Math.round(totalPrice),
-          components: componentIds,
+          components: Object.values(selectedComponents).map(c => c.id),
           is_predefined: false
         }),
       });
-
+  
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Ошибка создания сборки');
       }
-
+  
       const build = await res.json();
-
       dispatch(addToBasket({
         build_id: build.id,
         name: build.name,
@@ -240,10 +243,8 @@ export const ConfComputer = () => {
         quantity: 1
       }));
 
-      if (token) {
-        await dispatch(syncBasketWithServer()).unwrap();
-      }
-
+      await dispatch(syncBasketWithServer()).unwrap();
+      
       navigate("/basket");
     } catch (err) {
       console.error("Ошибка при добавлении в корзину:", err);

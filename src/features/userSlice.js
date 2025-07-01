@@ -55,8 +55,8 @@ const getInitialState = () => {
   return {
     user,
     token,
-    favorites,
-    orders, // Добавляем заказы в начальное состояние
+    favorites: favorites || [],
+    orders: orders || [],
     isInitialized,
     error: null,
     status: 'idle',
