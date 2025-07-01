@@ -14,9 +14,9 @@ import Login from "./routes/Auth/Login";
 import Register from "./routes/Auth/Register";
 import Profile from "./routes/Profile/Profile";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Navigate } from "react-router-dom";
+import { Navigate,  createHashRouter, RouterProvider} from "react-router-dom";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Root />,
