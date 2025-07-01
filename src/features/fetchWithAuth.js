@@ -11,6 +11,7 @@ export async function fetchWithAuth(url, options = {}) {
 
   if (res.status === 401) {
     try {
+
       const newToken = await store.dispatch(refreshToken()).unwrap();
       options.headers.Authorization = `Bearer ${newToken}`;
       res = await fetch(`${API_ENDPOINTS.BASE}${url}`, options);
