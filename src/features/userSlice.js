@@ -121,50 +121,52 @@ export const initializeUser = createAsyncThunk(
 
       // Загрузка корзины
       try {
-        const basketRes = await fetch('/api/basket', {
+        const basketRes = await fetch(API_ENDPOINTS.BASKET.GET, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (basketRes.ok) {
-          const basket = await basketRes.json();
-          dispatch(setBasketItems(basket.map(item => ({
-            build_id: item.build_id,
-            cart_id: item.id,
-            name: item.name,
-            img: item.image_url,
-            total_price: item.total_price,
-            quantity: item.quantity,
-          }))));
+          try {
+            const basket = await basketRes.json();
+            dispatch(setBasketItems(basket.map(item => ({
+              build_id: item.build_id,
+              cart_id: item.id,
+              name: item.name,
+              img: item.image_url,
+              total_price: item.total_price,
+              quantity: item.quantity,
+            }))))
+          } catch (basketError) {
+            console.warn("Failed to load basket", basketError);
+          }
+          return {
+            user,
+            token,
+            favorites,
+            orders,
+            isInitialized: true
+          }
         }
-      } catch (basketError) {
-        console.warn("Failed to load basket", basketError);
-      }
+      } catch (error) {
+        const userData = localStorage.getItem("userData");
+        if (userData) {
+          const user = JSON.parse(userData);
+          const favorites = JSON.parse(localStorage.getItem(`favorites_${user.id}`) || '[]');
+          const orders = JSON.parse(localStorage.getItem(`orders_${user.id}`) || '[]');
+          return {
+            user,
+            token,
+            favorites,
+            orders,
+            isInitialized: true
+          };
+        }
 
-      return {
-        user,
-        token,
-        favorites,
-        orders,
-        isInitialized: true
-      };
-    } catch (error) {
-      const userData = localStorage.getItem("userData");
-      if (userData) {
-        const user = JSON.parse(userData);
-        const favorites = JSON.parse(localStorage.getItem(`favorites_${user.id}`) || '[]');
-        const orders = JSON.parse(localStorage.getItem(`orders_${user.id}`) || '[]');
-        return {
-          user,
-          token,
-          favorites,
-          orders,
-          isInitialized: true
-        };
+        return rejectWithValue(error.message);
       }
-
-      return rejectWithValue(error.message);
+    } catch (err) {
+      console.error(err)
     }
-  }
-);
+  });
 
 export const addFavoriteAsync = createAsyncThunk(
   'user/addFavorite',
@@ -244,9 +246,9 @@ export const changePassword = createAsyncThunk(
 export const updateFavoriteAsync = createAsyncThunk(
   'user/updateFavorite',
   async ({ buildId, updatedBuild }, { getState, rejectWithValue }) => {
-    const token = getState().user.token; // Добавлено получение токена
+    const token = getState().user.token;
     try {
-      const res = await fetch(API_ENDPOINTS.BUILDS.UPDATE(buildId), { // Предполагается наличие UPDATE в API_ENDPOINTS
+      const res = await fetch(API_ENDPOINTS.BUILDS.UPDATE(buildId), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

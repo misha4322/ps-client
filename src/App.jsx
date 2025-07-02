@@ -1,5 +1,5 @@
 import React from "react";
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, redirect, RouterProvider } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./app/store";
 import { initializeUser } from "./features/userSlice";
@@ -56,7 +56,7 @@ const router = createHashRouter([
 const AppInitializer = () => {
   const dispatch = useDispatch();
   const { token, isInitialized } = useSelector(s => s.user);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   
   React.useEffect(() => {
     dispatch(initializeUser());
@@ -64,9 +64,9 @@ const AppInitializer = () => {
 
   React.useEffect(() => {
     if (isInitialized && !token) {
-      navigate("/login");
+      redirect("/login");
     }
-  }, [isInitialized, token, navigate]);
+  }, [isInitialized, token, redirect]);
 
   return <RouterProvider router={router} />;
 };
