@@ -153,7 +153,7 @@ export const Home = () => {
                   </button>
                 </div>
                 <img 
-                  src={`${API_ENDPOINTS.BASE_URL}/build_images/${b.image_url}`} 
+                  src={`/build_images/${b.image_url}`} 
                   alt={b.name} 
                   className={s.imgSlide} 
                 />
@@ -173,7 +173,7 @@ export const Home = () => {
               <div className={s.div_opozone}>
                 <p className={s.valuable_h4}>{build.name}</p>
                 <img 
-                  src={`${API_ENDPOINTS.BASE_URL}/build_images/${build.image_url}`} 
+                  src={`/build_images/${build.image_url}`} 
                   alt={build.name} 
                   className={s.buildImage} 
                 />
