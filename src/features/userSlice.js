@@ -94,7 +94,7 @@ export const initializeUser = createAsyncThunk(
       // Загрузка избранного
       let favorites = [];
       try {
-        const favoritesRes = await fetch('/api/favorites', {
+        const favoritesRes = await fetch(API_ENDPOINTS.FAVORITES.GET, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (favoritesRes.ok) {
@@ -108,7 +108,7 @@ export const initializeUser = createAsyncThunk(
       // Загрузка заказов
       let orders = [];
       try {
-        const ordersRes = await fetch('/api/orders', {
+        const ordersRes = await fetch(API_ENDPOINTS.ORDERS.GET, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (ordersRes.ok) {
