@@ -179,6 +179,7 @@ export const addFavoriteAsync = createAsyncThunk(
         },
         body: JSON.stringify({ build_id: build.id }),
       });
+
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to add favorite');
@@ -202,6 +203,7 @@ export const removeFavoriteAsync = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!res.ok) {
         const errorData = await res.json();
         return rejectWithValue(errorData.message || 'Failed to remove favorite');
@@ -227,7 +229,6 @@ export const changePassword = createAsyncThunk(
         },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Failed to change password');
@@ -270,7 +271,7 @@ export const refreshToken = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     const { token } = getState().user;
     try {
-      const res = await fetch(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
+      const res = await fetch(API_ENDPOINTS.AUTH.REFRESH, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
